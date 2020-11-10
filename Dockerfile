@@ -15,24 +15,42 @@ RUN \
  echo "**** add repositories ****" && \
  apt-get update && \
  apt-get install -y \
-	gnupg && \
- apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C5E6A5ED249AD24C && \
- echo "deb http://ppa.launchpad.net/deluge-team/stable/ubuntu bionic main" >> \
-	/etc/apt/sources.list.d/deluge.list && \
- echo "deb-src http://ppa.launchpad.net/deluge-team/stable/ubuntu bionic main" >> \
-	/etc/apt/sources.list.d/deluge.list && \
- echo "**** install packages ****" && \
- apt-get update && \
- apt-get install -y \
-	deluged \
-	deluge-console \
-	deluge-web \
-	python3-future \
-	python3-requests \
+	xz-utils \
+	build-essential \
+	python3 \
+	python3-dev \
+	python3-twisted \
+	python3-openssl \
+	python3-setuptools \
+	intltool \
+	python3-xdg \
+	python3-chardet \
+	geoip-database \
+	python3-libtorrent \
+	python-notify \
+	python-pygame \
+	python-glade2 \
+	librsvg2-common \
+	xdg-utils \
+	python3-mako \
 	p7zip-full \
 	unrar \
 	unzip && \
+ echo "**** installing software ****" && \
+ cd /tmp && \
+ curl http://download.deluge-torrent.org/source/2.0/deluge-2.0.3.tar.xz -O && \
+ ls && \
+ tar -xf /tmp/deluge-2.0.3.tar.xz && \
+ cd /tmp/deluge-2.0.3 && \
+ cat RELEASE-VERSION && \
+ python3 setup.py clean -a && \
+ python3 setup.py build && \
+ python3 setup.py install --install-layout=deb && \
+ cd packaging/systemd && \
+
  echo "**** cleanup ****" && \
+ cd / && \
+ apt-get purge -y --auto-remove build-essential python3-dev && \
  rm -rf \
 	/tmp/* \
 	/var/lib/apt/lists/* \
